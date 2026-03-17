@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매크로 키워드 검색기</title>
+    <style>
+        /* 화면 디자인 (CSS) 영역 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .search-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 600px;
+        }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 10px; }
+        p { color: #7f8c8d; text-align: center; margin-bottom: 30px; }
+        .input-area { display: flex; gap: 15px; margin-bottom: 30px; }
+        #keyword-input {
+            flex-grow: 1; padding: 15px; border: 2px solid #ddd;
+            border-radius: 8px; font-size: 16px; outline: none;
+        }
+        #keyword-input:focus { border-color: #3498db; }
+        #search-btn {
+            padding: 15px 30px; background-color: #3498db; color: white;
+            border: none; border-radius: 8px; font-size: 16px; cursor: pointer;
+        }
+        #search-btn:hover { background-color: #2980b9; }
+        hr { border: 0; border-top: 1px solid #eee; margin: 30px 0; }
+        .results-container h2 { color: #34495e; margin-bottom: 20px; }
+        #results-area {
+            background-color: #f9fbfd; padding: 20px;
+            border-radius: 8px; min-height: 100px;
+        }
+        .placeholder-text { color: #b0bec5; font-style: italic; text-align: center; margin: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="search-container">
+        <h1>매크로 검색</h1>
+        <p>검색하고 싶은 키워드를 입력하세요.</p>
+        
+        <div class="input-area">
+            <input type="text" id="keyword-input" placeholder="키워드 입력...">
+            <button id="search-btn">검색</button>
+        </div>
+
+        <hr>
+
+        <div class="results-container">
+            <h2>검색 결과</h2>
+            <div id="results-area">
+                <p class="placeholder-text">키워드를 입력하고 검색을 시작해 주세요.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 동작 기능 (JavaScript) 영역
+        const keywordInput = document.getElementById('keyword-input');
+        const searchBtn = document.getElementById('search-btn');
+        const resultsArea = document.getElementById('results-area');
+
+        searchBtn.addEventListener('click', function() {
+            const keyword = keywordInput.value.trim();
+
+            if (!keyword) {
+                alert("키워드를 입력해 주세요.");
+                return;
+            }
+
+            resultsArea.innerHTML = ''; 
+            
+            const resultElement = document.createElement('p');
+            resultElement.textContent = `'${keyword}' 키워드로 매크로 검색을 요청했습니다. (이곳에 실제 결과가 표시됩니다.)`;
+            resultElement.style.color = '#e67e22'; 
+            resultElement.style.fontWeight = 'bold';
+
+            resultsArea.appendChild(resultElement);
+        });
+    </script>
+</body>
+</html>
