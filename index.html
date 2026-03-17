@@ -21,17 +21,17 @@
     <div class="search-container">
         <h1>키워드 수집기</h1>
         <div class="input-area">
-            <input type="text" id="keyword-input" placeholder="키워드 입력 (예: 강아지 사료, 고양이 간식 등)...">
-            <button id="search-btn">저장하기</button>
+            <input type="text" id="keyword-input" placeholder="키워드 입력 (예: 강아지 덴탈껌, 고양이 츄르 등)...">
+            <button id="search-btn">검색</button> 
         </div>
-        <div id="results-area">입력한 데이터가 파이어베이스로 전송됩니다.</div>
+        <div id="results-area">키워드를 검색하면 파이어베이스에 자동 저장됩니다.</div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // kimbany님이 찾아오신 정확한 프로젝트 설정값
+        // 기존에 설정하신 완벽한 파이어베이스 키값
         const firebaseConfig = {
             apiKey: "AIzaSyAtE6SaBaZT0zj47RpfsoigBiKKa8_2S-U",
             authDomain: "product-ranking-64552.firebaseapp.com",
@@ -43,38 +43,43 @@
             measurementId: "G-DE3SGYEB7P"
         };
 
-        // 파이어베이스 실행
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        // 버튼 클릭 시 작동하는 기능
+        // 검색 버튼 클릭 시 작동하는 '매크로' 기능
         document.getElementById('search-btn').addEventListener('click', function() {
             const keyword = document.getElementById('keyword-input').value.trim();
             
             if (!keyword) {
-                alert("키워드를 먼저 입력해 주세요!");
+                alert("검색할 키워드를 먼저 입력해 주세요!");
                 return;
             }
 
-            document.getElementById('results-area').style.color = "#e67e22";
-            document.getElementById('results-area').innerText = `'${keyword}' 데이터를 파이어베이스로 보내는 중...`;
+            // ==========================================
+            // [매크로 1단계] 네이버 새 창 띄워서 바로 검색 결과 보여주기
+            // ==========================================
+            // 사용자가 입력한 키워드를 인터넷 주소 규칙에 맞게 변환합니다.
+            const encodedKeyword = encodeURIComponent(keyword);
+            // 네이버 검색 주소에 키워드를 찰싹 붙입니다.
+            const naverSearchUrl = `https://search.naver.com/search.naver?query=${encodedKeyword}`;
+            // 새 탭(_blank)을 열어서 해당 네이버 주소로 이동합니다.
+            window.open(naverSearchUrl, '_blank'); 
 
-            // 파이어베이스 Realtime Database의 'search_keywords'라는 이름의 폴더에 저장
+            // ==========================================
+            // [매크로 2단계] 파이어베이스에 검색 기록 몰래 저장하기
+            // ==========================================
+            document.getElementById('results-area').style.color = "#e67e22";
+            document.getElementById('results-area').innerText = `'${keyword}' 검색 중...`;
+
             const keywordListRef = ref(database, 'search_keywords'); 
             const newKeywordRef = push(keywordListRef);
             
             set(newKeywordRef, {
                 word: keyword,
-                time: new Date().toLocaleString() // 저장되는 시간 기록
+                time: new Date().toLocaleString()
             }).then(() => {
-                // 성공적으로 저장되었을 때
                 document.getElementById('results-area').style.color = "#27ae60";
-                document.getElementById('results-area').innerText = `'${keyword}' 키워드가 파이어베이스에 성공적으로 저장되었습니다! 🎉`;
-                document.getElementById('keyword-input').value = ''; // 입력창 비우기
-            }).catch((error) => {
-                // 에러가 났을 때
-                document.getElementById('results-area').style.color = "#c0392b";
-                document.getElementById('results-area').innerText = "저장 중 오류가 발생했습니다: " + error;
+                document.getElementById('results-area').innerText = `'${keyword}' 네이버 검색 및 DB 저장 완료! 🎉`;
             });
         });
     </script>
